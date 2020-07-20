@@ -11,4 +11,6 @@ chmod a+x oled.py
 ```
 
 # Usage
+```
 ./oled.py image.gif
+```
