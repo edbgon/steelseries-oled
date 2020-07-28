@@ -12,6 +12,11 @@ if(len(sys.argv) < 2):
 en = Enumeration()
 # Return a list of devices based on the search parameters / Hardcoded to Apex 7
 devices = en.find(vid=0x1038, pid=0x1612, interface=1)
+if not devices:
+    devices = en.find(vid=0x1038, pid=0x1618, interface=1)
+if not devices:
+    print("No devices found, exiting.")
+    sys.exit(0)
 # Use first device found with vid/pid
 dev = devices[0]
 
