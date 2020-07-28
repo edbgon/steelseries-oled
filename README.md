@@ -14,3 +14,5 @@ chmod a+x oled.py
 ```
 ./oled.py image.gif
 ```
+# Tools
+Included are two extra tools, one that will display system stats on the OLED and one that will switch profiles.
