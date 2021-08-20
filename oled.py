@@ -23,6 +23,8 @@ if(len(argv) < 2):
 
 # Set up ctrl-c handler
 signal(SIGINT, signal_handler)
+# Set up SIGTERM handler
+signal(SIGTERM, signal_handler)
 
 # Stores an enumeration of all the connected USB HID devices
 en = Enumeration()
