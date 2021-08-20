@@ -3,8 +3,8 @@
 from PIL import Image, ImageSequence
 from easyhid import Enumeration
 from time import sleep
-import signal
-import sys
+from signal import signal, SIGINT, SIGTERM
+from sys import exit, argv
 
 def signal_handler(sig, frame):
     try:
@@ -12,17 +12,17 @@ def signal_handler(sig, frame):
         dev.send_feature_report(bytearray([0x61] + [0x00] * 641))
         dev.close()
         print("\n")
-        sys.exit(0)
+        exit(0)
     except:
-        sys.exit(0)
+        exit(0)
 
 # Check for arguments
-if(len(sys.argv) < 2):
+if(len(argv) < 2):
 	print("Usage: oled.py image.gif\n")
-	sys.exit(0)        
+	exit(0)        
 
 # Set up ctrl-c handler
-signal.signal(signal.SIGINT, signal_handler)
+signal(SIGINT, signal_handler)
 
 # Stores an enumeration of all the connected USB HID devices
 en = Enumeration()
@@ -32,7 +32,7 @@ if not devices:
     devices = en.find(vid=0x1038, pid=0x1618, interface=1)
 if not devices:
     print("No devices found, exiting.")
-    sys.exit(0)
+    exit(0)
 
 # Use first device found with vid/pid
 dev = devices[0]
@@ -40,7 +40,7 @@ dev = devices[0]
 print("Press Ctrl-C to exit.\n")
 dev.open()
 
-im = Image.open(sys.argv[1])
+im = Image.open(argv[1])
 
 while(1):
 	for frame in ImageSequence.Iterator(im):
