@@ -28,13 +28,17 @@ signal(SIGTERM, signal_handler)
 
 # Stores an enumeration of all the connected USB HID devices
 en = Enumeration()
-# Return a list of devices based on the search parameters / Hardcoded to Apex 7
+# Return a list of devices based on the search parameters
+# Apex 7
 devices = en.find(vid=0x1038, pid=0x1612, interface=1)
 if not devices:
+	# Apex 7 TKL
 	devices = en.find(vid=0x1038, pid=0x1618, interface=1)
 if not devices:
-	print("No devices found, exiting.")
-	exit(0)
+	# Apex Pro
+	devices = en.find(vid=0x1038, pid=0x1610, interface=1)
+if not devices:
+	exit("No devices found, exiting.")
 
 # Use first device found with vid/pid
 dev = devices[0]
