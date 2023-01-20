@@ -11,21 +11,20 @@ def getdevice():
 	# Stores an enumeration of all the connected USB HID devices
 	en = Enumeration()
 
-	# Return a list of devices based on the search parameters
-	# Apex 7
-	devices = en.find(vid=0x1038, pid=0x1612, interface=1)
-	if not devices:
-		# Apex 7 TKL
-		devices = en.find(vid=0x1038, pid=0x1618, interface=1)
-	if not devices:
-		# Apex Pro
-		devices = en.find(vid=0x1038, pid=0x1610, interface=1)
-	if not devices:
-		exit("No devices found, exiting.")
+	#List of known working devices, add your PID here if it works
+	#                Apex 7,  7 TKL, Pro
+	supported_pid = (0x1612, 0x1618, 0x1610)
 
-	# Use first device found with vid/pid
-	dev = devices[0]
-	return dev
+	# Return a list of devices based on the search parameters
+	devices = en.find(vid=0x1038, interface=1)
+	if not devices:
+		exit("No SteelSeries devices found, exiting.")
+
+	for device in devices:
+		if device.product_id in supported_pid:
+			return device
+
+	exit("No compatible SteelSeries devices found, exiting.")
 
 def main():
 	# Check for arguments
@@ -65,17 +64,17 @@ def main():
 	try:
 		im = Image.open(argument)
 	except Exception:
-		exit("The GIF " + argument + " can't get opened")
+		exit("The GIF " + argument + " can't be opened")
 
 	# resize GIF, process the image frames for the keyboard
 	resizedframes = []
 	for frame in ImageSequence.Iterator(im):
-			# Image size based on Apex 7 and Apex Pro
-			frame = frame.resize((128, 40))
-			# Convert to monochrome
-			frame = frame.convert('1')
-			data = frame.tobytes()
-			resizedframes.append(bytearray([0x61]) + data + bytearray([0x00]))
+		# Image size based on Apex 7 and Apex Pro
+		frame = frame.resize((128, 40))
+		# Convert to monochrome
+		frame = frame.convert('1')
+		data = frame.tobytes()
+		resizedframes.append(bytearray([0x61]) + data + bytearray([0x00]))
 
 	# set up the frame rate
 	if 'duration' in frame.info:
